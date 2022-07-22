@@ -274,6 +274,14 @@ FRIDAY   15th JULY     2022 02:15.38 PM
 
 7)
 
+SQL> select *
+  2  from scott.emp
+  3  where hiredate between last_day(hiredate)-6 and last_day(hiredate) 
+  4  and to_char(hiredate,'day')='wednesday' and
+  5  months_between(sysdate,hiredate)>20;
+
+no rows selected
+
 8)
 
 SQL> select round(months_between(sysdate,hiredate)/12) as service from scott.emp;
