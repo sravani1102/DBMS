@@ -28,13 +28,13 @@ SQL> select count(title) Courses,
          3          3
 
 SQL> select count(title) Courses,
-  2  count(distinct(credits)) Credits
+  2  sum(credits) Credits
   3  from course
   4  where dept_name='Biology';
 
    COURSES    CREDITS
 ---------- ----------
-         3          2
+         3          11
 
 4)
 
@@ -158,3 +158,27 @@ TOTAL_CREDITS
            14
 
 12)
+
+SQL> select t.id,sum(credits) as credits_sum
+ 2 from (select student.id,course.id
+ 3 from student,takes
+ 4 where takes.id(+)=student.id) t,course
+ 5 where course.course_id(+)=t.course_id;
+ 
+  ID          CREDIT_SUM
+ -----       ------------
+ 00128             7
+ 12345            14
+ 19991             3
+ 23121             3
+ 44553             4
+ 45678            11
+ 54321             8
+ 55739             3
+ 70557
+ 76543             7
+ 76653             3
+ 98765             7
+ 98988             8
+ 
+ 13 rows selected.
