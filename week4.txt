@@ -1,0 +1,160 @@
+1)
+
+SQL> select max(capacity) as Maximum_Capacity,avg(capacity) as Average_Capacity
+  2  from classroom;
+
+MAXIMUM_CAPACITY AVERAGE_CAPACITY
+---------------- ----------------
+             500              132
+
+2)
+
+SQL> select min(budget) Least_Budget
+  2  from department;
+
+LEAST_BUDGET
+------------
+       50000
+
+3)
+
+SQL> select count(title) Courses,
+  2  count(credits) Credits
+  3  from course
+  4  where dept_name='Biology';
+
+   COURSES    CREDITS
+---------- ----------
+         3          3
+
+SQL> select count(title) Courses,
+  2  count(distinct(credits)) Credits
+  3  from course
+  4  where dept_name='Biology';
+
+   COURSES    CREDITS
+---------- ----------
+         3          2
+
+4)
+
+SQL> select avg(salary) as Average_Salary
+  2  from instructor
+  3  where dept_name='Comp. Sci.';
+
+AVERAGE_SALARY
+--------------
+    77333.3333
+
+5)
+
+SQL> select count(distinct(id)) Instructors
+  2  from teaches
+  3  where semester='Spring' and year=2010;
+
+INSTRUCTORS
+-----------
+          6
+
+6)
+
+SQL> select dept_name,avg(salary) average
+  2  from instructor
+  3  group by dept_name;
+
+DEPT_NAME               AVERAGE
+-------------------- ----------
+Biology                   72000
+Comp. Sci.           77333.3333
+Elec. Eng.                80000
+Finance                   85000
+History                   61000
+Music                     40000
+Physics                   91000
+
+7 rows selected.
+
+7)
+
+SQL> select dept_name,count(distinct(name)) as Instructor
+  2  from instructor,teaches
+  3  where instructor.id=teaches.id and semester='Spring' and year=2010
+  4  group by dept_name;
+
+DEPT_NAME            INSTRUCTOR
+-------------------- ----------
+Comp. Sci.                    3
+Finance                       1
+History                       1
+Music                         1
+
+
+8)
+
+SQL> select dept_name,avg(salary) average
+  2  from instructor
+  3  group by dept_name
+  4  having avg(salary)>42000;
+
+DEPT_NAME               AVERAGE
+-------------------- ----------
+Biology                   72000
+Comp. Sci.           77333.3333
+Elec. Eng.                80000
+Finance                   85000
+History                   61000
+Physics                   91000
+
+9)
+
+SQL> select avg(distinct tot_cred) Average
+  2  from student,takes
+  3  where student.id=takes.id and year=2009 and
+  4  course_id in (select course_id from takes
+  5  group by course_id
+  6  having count(course_id)>=2);
+
+   AVERAGE
+----------
+        65
+
+SQL> select course_id,avg(distinct tot_cred) Average
+  2  from student,takes
+  3  where student.id=takes.id and year=2009
+  4  group by course_id
+  5  having count(course_id)>=2;
+
+COURSE_I    AVERAGE
+-------- ----------
+CS-101           65
+CS-190           43
+CS-347           67
+
+10)
+SQL> select dept_name,max(salary) salary
+  2  from instructor
+  3  group by dept_name;
+
+DEPT_NAME                SALARY
+-------------------- ----------
+Biology                   72000
+Comp. Sci.                92000
+Elec. Eng.                80000
+Finance                   90000
+History                   62000
+Music                     40000
+Physics                   95000
+
+7 rows selected.
+
+11)
+
+SQL> select sum(credits) total_credits
+  2  from course,takes
+  3  where course.course_id=takes.course_id and takes.id=12345;
+
+TOTAL_CREDITS
+-------------
+           14
+
+12)
