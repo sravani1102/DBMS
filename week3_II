@@ -144,3 +144,15 @@ ID    NAME                 DEPT_NAME                SALARY
 15151 Mozart               Music                     40000
 
 12 rows selected.
+
+13)
+SQL>select building,capacity
+ 2  from classroom
+ 3  where room_number in(100,120,101,514);
+ 
+ BUILDING   CAPACITY
+----------  ----------
+Packard       500
+Painter        10
+Watson         30
+Watson         50
