@@ -8,7 +8,6 @@ where id=10101);
 
 TOT_STUDENTS
 6
-1 rows selected.
 
 2)
 
@@ -30,14 +29,16 @@ Katz	75000
 
 3)
 
-select max(ave) max_average
-from (select dept_name,avg(salary) as ave
+select dept_name,avg(salary) avg_salary
 from instructor
-group by dept_name)
+group by dept_name
+having avg(salary)>=all(select avg(salary)
+from instructor
+group by dept_name);
 
-MAX_AVERAGE
-91000
-1 rows selected.
+DEPT_NAME    MAX_AVERAGE
+----------   -----------
+Physics       91000
 
 4)
 
@@ -50,7 +51,6 @@ where semester='Spring' and year=2010);
 
 COURSE_ID
 CS-101
-1 rows returned
 
 
 5)
@@ -64,7 +64,7 @@ where semester='Spring' and year=2010);
 COURSE_ID
 CS-347
 PHY-101
-2 rows returned
+
 
 6)
 
@@ -78,19 +78,11 @@ where s.course_id=t.course_id and semester='Spring' and year=2010);
 
 COURSE_ID
 CS-101
-1 rows returned
+
 
 7)
 
-select name
-from student s
-where exists(select name
-from takes t
-where s.id=t.id and course_id like 'BIO%');
 
-
-NAME
-Tanaka
 
 8)
 
@@ -120,7 +112,7 @@ where c>=2;
 
 COURSE_ID
 CS-190
-1 rows returned.
+
 
 10)
 
@@ -133,11 +125,12 @@ where ave>42000;
 DEPT_NAME	AVERAGE
 Elec. Eng.	80000
 Physics		91000
-Comp. Sci.	77333.3333333333333333333333333333333333
+Comp. Sci.	77333.3333
 Finance		85000
 Biology		72000
 History		61000
 
+6 rows selected.
 
 11)
 
@@ -152,4 +145,31 @@ Finance		120000
 
 12)
 
+select i.id,name
+from instructor i
+where i.id not in(select id
+from teaches t
+where i.id=t.id);
 
+  ID       NAME
+------    ------
+33456     Gold
+58583     Califieri
+76543     Singh
+
+13)
+
+14)
+
+select id,name,salary
+from instructor
+where salary in (slect min(max_sal) min_max_salary
+from (select max(salary) max_sal
+from instructor
+group by dept_name));
+
+  ID      NAME    SALARY
+------   ------  -------
+15151    Mozart   40000
+
+15)
