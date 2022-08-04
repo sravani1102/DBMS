@@ -365,3 +365,96 @@ MILLER           1300 below target
 
 10)
 
+SQL> select ename,empno,dname,sal
+  2  from scott.emp e,scott.dept d
+  3  where e.deptno=d.deptno and d.deptno=30;
+
+ENAME           EMPNO DNAME                 SAL
+---------- ---------- -------------- ----------
+ALLEN            7499 SALES                1600
+WARD             7521 SALES                1250
+MARTIN           7654 SALES                1250
+BLAKE            7698 SALES                2850
+TURNER           7844 SALES                1500
+JAMES            7900 SALES                 950
+
+6 rows selected.
+
+11)
+SQL> select to_char(sysdate,'hh :'||'mi :'||'ss')
+  2  from dual;
+
+TO_CHAR(SY
+----------
+08 :48 :42
+
+12)
+
+SQL> select ename,sal
+  2  from scott.emp e
+  3  where sal>(select avg(sal)
+  4  from scott.emp t
+  5  where e.deptno=t.deptno
+  6  group by deptno);
+
+ENAME             SAL
+---------- ----------
+ALLEN            1600
+JONES            2975
+BLAKE            2850
+SCOTT            3000
+KING             5000
+FORD             3000
+
+6 rows selected.
+
+13)
+
+
+SQL> select ename,c
+  2  from scott.emp e,(select mgr,count(mgr) c
+  3  from scott.emp
+  4  group by mgr) s
+  5  where e.empno=s.mgr;
+
+ENAME               C
+---------- ----------
+KING                3
+CLARK               1
+BLAKE               5
+FORD                1
+JONES               2
+SCOTT               1
+
+6 rows selected.
+
+14)
+
+SQL> select ename,c
+  2  from scott.emp e,(select mgr,count(mgr) c
+  3  from scott.emp
+  4  group by mgr
+  5  having count(mgr)>=all(select count(mgr) c
+  6  from scott.emp
+  7  group by mgr)) s
+  8  where e.empno=s.mgr;
+
+ENAME               C
+---------- ----------
+BLAKE               5
+
+15)
+SQL> select ename,sal
+  2  from (select ename,sal
+  3  from scott.emp
+  4  order by sal desc)
+  5  where rownum<=3;
+
+ENAME             SAL
+---------- ----------
+KING             5000
+SCOTT            3000
+FORD             3000
+
+16)
+17)
