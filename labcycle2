@@ -331,3 +331,37 @@ SQL> select round((sysdate-hiredate)/365) as service from scott.emp;
         41
 
 14 rows selected.
+
+9)
+
+SQL> select ename,sal,case
+  2  when sal>1500 then 'above target'
+  3  when sal=1500 then 'on the target'
+  4  else 'below target'
+  5  end as c
+  6  from scott.emp;
+
+ENAME             SAL C
+---------- ---------- -------------
+SMITH             800 below target
+ALLEN            1600 above target
+WARD             1250 below target
+JONES            2975 above target
+MARTIN           1250 below target
+BLAKE            2850 above target
+CLARK            2450 above target
+SCOTT            3000 above target
+KING             5000 above target
+TURNER           1500 on the target
+ADAMS            1100 below target
+
+ENAME             SAL C
+---------- ---------- -------------
+JAMES             950 below target
+FORD             3000 above target
+MILLER           1300 below target
+
+14 rows selected.
+
+10)
+
