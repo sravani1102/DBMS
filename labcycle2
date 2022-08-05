@@ -233,34 +233,7 @@ SQL> select *
 ----------
       7876 ADAMS      CLERK           7788 12-JAN-83       1100
         20
-        
-6)
 
-SQL> select to_char(hiredate,upper('day')||'dd'||'th'||' '||upper('month')
-  2  ||'yyyy'||' hh:'||'mm.'||'ss PM') as new_time
-  3  from scott.emp;
-
-NEW_TIME
----------------------------------------
-TUESDAY  17th NOVEMBER 1981 12:11.00 AM
-FRIDAY   01st MAY      1981 12:05.00 AM
-TUESDAY  09th JUNE     1981 12:06.00 AM
-THURSDAY 02nd APRIL    1981 12:04.00 AM
-MONDAY   28th SEPTEMBER1981 12:09.00 AM
-FRIDAY   20th FEBRUARY 1981 12:02.00 AM
-TUESDAY  08th SEPTEMBER1981 12:09.00 AM
-THURSDAY 03rd DECEMBER 1981 12:12.00 AM
-SUNDAY   22nd FEBRUARY 1981 12:02.00 AM
-THURSDAY 03rd DECEMBER 1981 12:12.00 AM
-WEDNESDAY17th DECEMBER 1980 12:12.00 AM
-
-NEW_TIME
----------------------------------------
-THURSDAY 09th DECEMBER 1982 12:12.00 AM
-WEDNESDAY12th JANUARY  1983 12:01.00 AM
-SATURDAY 23rd JANUARY  1982 12:01.00 AM
-
-14 rows selected.
 
 6)
 
@@ -284,29 +257,6 @@ no rows selected
 
 8)
 
-SQL> select round(months_between(sysdate,hiredate)/12) as service from scott.emp;
-
-   SERVICE
-----------
-        41
-        41
-        41
-        41
-        41
-        41
-        41
-        41
-        41
-        41
-        42
-
-   SERVICE
-----------
-        40
-        40
-        40
-
-14 rows selected.
 
 SQL> select round((sysdate-hiredate)/365) as service from scott.emp;
 
@@ -365,18 +315,20 @@ MILLER           1300 below target
 
 10)
 
-SQL> select ename,empno,dname,sal
-  2  from scott.emp e,scott.dept d
-  3  where e.deptno=d.deptno and d.deptno=30;
+SQL> select distinct(ename),empno,dname,e.sal,grade
+  2  from scott.emp e,scott.dept d,(select sal,grade
+  3  from scott.salgrade s,scott.emp
+  4  where sal between losal and hisal) g
+  5  where e.deptno=d.deptno and d.deptno=30 and g.sal=e.sal;
 
-ENAME           EMPNO DNAME                 SAL
----------- ---------- -------------- ----------
-ALLEN            7499 SALES                1600
-WARD             7521 SALES                1250
-MARTIN           7654 SALES                1250
-BLAKE            7698 SALES                2850
-TURNER           7844 SALES                1500
-JAMES            7900 SALES                 950
+ENAME           EMPNO DNAME                 SAL      GRADE
+---------- ---------- -------------- ---------- ----------
+JAMES            7900 SALES                 950          1
+WARD             7521 SALES                1250          2
+MARTIN           7654 SALES                1250          2
+TURNER           7844 SALES                1500          3
+ALLEN            7499 SALES                1600          3
+BLAKE            7698 SALES                2850          4
 
 6 rows selected.
 
@@ -457,4 +409,45 @@ SCOTT            3000
 FORD             3000
 
 16)
+SQL> select ename
+  2  from scott.emp e
+  3  where exists(select ename
+  4  from scott.emp s
+  5  where e.mgr=s.empno and e.hiredate<s.hiredate);
+
+ENAME
+----------
+BLAKE
+CLARK
+JONES
+ALLEN
+WARD
+SMITH
+
+6 rows selected.
+
 17)
+
+SQL> select year,no_of_employee
+  2  from (select to_char(hiredate,'yyyy') year,count(to_char(hiredate,'yyyy')) no_of_employee
+  3  from scott.emp
+  4  group by to_char(hiredate,'yyyy'))
+  5  where no_of_employee>=all(select count(to_char(hiredate,'yyyy')) no_of_employee
+  6  from scott.emp
+  7  group by to_char(hiredate,'yyyy'));
+
+YEAR NO_OF_EMPLOYEE
+---- --------------
+1981             10
+
+18)
+
+SQL> select upper(to_char(to_date(&date,'DD.MM.YYYY'),'day')) as day
+  2  from dual;
+Enter value for date: '11.11.2002'
+old   1: select upper(to_char(to_date(&date,'DD.MM.YYYY'),'day'))
+new   1: select upper(to_char(to_date('11.11.2002','DD.MM.YYYY'),'day'))
+
+UPPER(TO_
+---------
+MONDAY
