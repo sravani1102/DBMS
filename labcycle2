@@ -121,21 +121,6 @@ SQL> select * from scott.salgrade;
          LAB CYCLE-2
 1)
 
-SQL> select dname 
-  2  from scott.dept;
-
-DNAME
---------------
-ACCOUNTING
-RESEARCH
-SALES
-OPERATIONS
-it
-cse
-
-6 rows selected.
-
-
 SQL> select initcap(dname)
   2  from scott.dept;
 
@@ -448,6 +433,6 @@ Enter value for date: '11.11.2002'
 old   1: select upper(to_char(to_date(&date,'DD.MM.YYYY'),'day'))
 new   1: select upper(to_char(to_date('11.11.2002','DD.MM.YYYY'),'day'))
 
-UPPER(TO_
+  DAY
 ---------
 MONDAY
