@@ -1,0 +1,163 @@
+1)
+
+declare
+	n number:=&n;
+	m number;
+	rev number:=0;
+begin
+	m:=n;
+	while m>0 loop
+		rev:=rev*10+mod(m,10);
+		m:=floor(m/10);
+	end loop;
+	if rev=n then
+		dbms_output.put_line(n||' is a palindrome');
+	else
+		dbms_output.put_line(n||' is not a palindrome');
+	end if;
+end;
+
+output
+
+Enter value for n: 123454321
+old   2:        n number:=&n;
+new   2:        n number:=123454321;
+123454321 is a palindrome
+
+PL/SQL procedure successfully completed.
+
+2)
+
+declare
+	n number:=&n;
+	a number:=0;
+	b number:=1;
+	c number;
+	i number:=0;
+begin
+	dbms_output.put_line('The first '||n||' fibonacci numbers are');
+	if n=1 then
+		dbms_output.put_line(a);
+	elsif n=2 then
+		dbms_output.put_line(a);
+		dbms_output.put_line(b);
+	else
+		dbms_output.put_line(a);
+		dbms_output.put_line(b);
+		while i<n-2 loop
+			c:=a+b;
+			a:=b;
+			b:=c;
+			dbms_output.put_line(c);
+			i:=i+1;
+		end loop;
+	end if;
+end;
+
+#output 
+
+Enter value for n: 10
+old   2:        n number:=&n;
+new   2:        n number:=10;
+The first 10 fibonacci numbers are
+0
+1
+1
+2
+3
+5
+8
+13
+21
+34
+
+3)
+
+declare
+	n number:=&n;
+	c number:=0;
+	i number:=0;
+begin
+	for i in 2..sqrt(n/2) loop
+		if mod(n,i)=0 then
+			c:=1;
+			exit when c=1;
+		end if;
+	end loop;
+	if c=1 then
+		dbms_output.put_line(n||' is not a prime number');
+	else
+		dbms_output.put_line(n||' is a prime number');
+	end if;
+end;
+
+
+SQL> /
+Enter value for n: 66
+old   2:        n number:=&n;
+new   2:        n number:=66;
+66 is not a prime number
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for n: 199
+old   2:        n number:=&n;
+new   2:        n number:=199;
+199 is a prime number
+
+PL/SQL procedure successfully completed.
+
+4)
+
+declare
+   a number:=&first;
+   b number:=&second;
+   m number;
+   n number;
+   hcf number;
+   lcm number;
+begin
+   if a>b then
+           m:=a;
+   else
+           m:=b;
+   end if;
+   loop
+           if mod(m,a)=0 and mod(m,b)=0 then
+                   exit;
+           else
+                   m:=m+1;
+           end if;
+   end loop;
+   lcm:=m;
+   hcf:=b;
+   n:=a;
+   loop
+           m:=n;
+           n:=mod(hcf,n);
+           hcf:=m;
+           if n=0 then
+                   exit;
+           end if;
+   end loop;
+   insert into demo_tab values(a,b,lcm,hcf);
+end;
+
+
+Enter value for first: 45
+old   2:        a number:=&first;
+new   2:        a number:=45;
+Enter value for second: 43
+old   3:        b number:=&second;
+new   3:        b number:=43;
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from demo_tab;
+
+     FIRST     SECOND        LCM        HCF
+---------- ---------- ---------- ----------
+        45         43       1935          1
+        
+        
