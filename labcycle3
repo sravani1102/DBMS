@@ -262,3 +262,93 @@ PRODUCT_ID STATUS                         DATES
 ---------- ------------------------------ ----------
       1004 PURCHASED                      02-SEP-22
       1003 OUT OF STOCK                   02-SEP-22
+
+7)
+
+SQL> create table employee(eno number(5),ename varchar(30),basic_pay number(10));
+
+Table created.
+
+SQL> insert into employee values(&eno,&ename,&basic_pay);
+Enter value for eno: 10001
+Enter value for ename: 'Sravani'
+Enter value for basic_pay: 12328
+old   1: insert into employee values(&eno,&ename,&basic_pay)
+new   1: insert into employee values(10001,'Sravani',12328)
+
+1 row created.
+
+SQL> /
+Enter value for eno: 10002
+Enter value for ename: 'Vindhya'
+Enter value for basic_pay: 45312
+old   1: insert into employee values(&eno,&ename,&basic_pay)
+new   1: insert into employee values(10002,'Vindhya',45312)
+
+1 row created.
+
+SQL> /
+Enter value for eno: 10003
+Enter value for ename: 'Vijaya'
+Enter value for basic_pay: 23134
+old   1: insert into employee values(&eno,&ename,&basic_pay)
+new   1: insert into employee values(10003,'Vijaya',23134)
+
+1 row created.
+
+SQL> /
+Enter value for eno: 10004
+Enter value for ename: 'Praveena'
+Enter value for basic_pay: 54211
+old   1: insert into employee values(&eno,&ename,&basic_pay)
+new   1: insert into employee values(10004,'Praveena',54211)
+
+1 row created.
+
+declare
+	hra number;
+	da number;
+	pf number;
+	pt number;
+	gross_salary number;
+	net_salary number;
+	b_p employee.basic_pay%type;
+	emp employee.ename%type;
+	eno employee.eno%type;
+begin
+	emp:=&Employee;
+	select basic_pay into b_p from employee where ename=emp;
+	select eno into eno from employee where ename=emp;
+	hra:=b_p*0.15;
+	da:=b_p*0.62;
+	gross_salary:=b_p+hra+da;
+	if gross_salary>8000 then
+		pf:=780;
+	else
+		pf:=600;
+	end if;
+	pt:=0.02*b_p;
+	net_salary:=gross_salary-pf-pt;
+	dbms_output.put_line('Employee number = '||eno||', Employee name = '||emp||', HRA = '||hra||', DA = '||da||', PF = '||pf||', PTax = '||pt||', Gross salary = '||gross_salary||', Net Salary = '||net_salary);
+end;
+	
+SQL> @C:\Users\kallu\Desktop\dbms_lab\plsql7.sql;
+ 29  /
+Enter value for employee: 'Sravani'
+old  12:        emp:=&Employee;
+new  12:        emp:='Sravani';
+Employee number = 10001, Employee name = Sravani, HRA = 1849.2, DA = 7643.36, PF
+= 780, PTax = 246.56, Gross salary = 21820.56, Net Salary = 20794
+
+PL/SQL procedure successfully completed.
+
+8)
+
+SQL> create table emp1(empid number(5),name varchar(30),salary number(8),dno number(2));
+
+Table created.
+
+SQL> create table del_history(dno number(2),rows_deleted number(5),date1 varchar(10));
+
+Table created.
+
