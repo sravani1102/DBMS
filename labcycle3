@@ -344,11 +344,113 @@ PL/SQL procedure successfully completed.
 
 8)
 
-SQL> create table emp1(empid number(5),name varchar(30),salary number(8),dno number(2));
+SQL> create table emp(empid number(5),name varchar(30),salary number(8),dno number(2));
 
 Table created.
 
 SQL> create table del_history(dno number(2),rows_deleted number(5),date1 varchar(10));
 
 Table created.
+
+SQL> select * from emp;
+
+ EMPID NAME                               SALARY        DNO
+------ ------------------------------ ---------- ----------
+ 10001 Sravani                             42312          2
+ 10002 Vindhya                             32134          1
+ 10003 Vijaya                              34213          1
+ 10004 Praveena                            65231          2
+ 10005 Madhavi                             23134          1
+
+declare
+	d emp.dno%type:=&department;
+	row_delete number;
+begin
+	delete from emp where dno=d;
+	row_delete:=sql%rowcount;
+	insert into del_history values(dno,row_delete,sysdate);
+end;
+
+SQL> select * from del_history;
+
+       DNO ROWS_DELETED DATE1
+---------- ------------ ----------
+         2            2 09-SEP-22
+
+SQL> select * from emp;
+
+  EMPID NAME                               SALARY        DNO
+------- ------------------------------ ---------- ----------
+   10002 Vindhya                             32134          1
+   10003 Vijaya                              34213          1
+   10005 Madhavi                             23134          1
+     
+
+9)
+create table employee(empno number(5),name varchar(30),salary number(8),designation varchar(10),deptID varchar(10));
+
+Table created.
+
+SQL> select empno,salary from employee;
+
+     EMPNO     SALARY
+---------- ----------
+     10001      24335
+     10002       4211
+     10003       1234
+     10004      12313
+     10005       1331
+     10006      43213
+     10007        230
+     10008       2213
+
+8 rows selected.
+
+declare
+	cursor c is select empno,salary from employee order by salary;
+	cursor c1 is select empno,salary from employee order by salary desc;
+	e_no employee.empno%type;
+	sal employee.salary%type;
+	i number:=0;
+begin
+	open c;
+	open c1;
+	dbms_output.put_line('First Highest paid employee');
+	dbms_output.put_line('Emp_no Salary');
+	for i in 1..5 loop
+		exit when c1%notfound;
+		fetch c1 into e_no,sal;
+		dbms_output.put_line(e_no||' '||sal);
+	end loop;
+	dbms_output.put_line('First Lowest paid employee');
+	dbms_output.put_line('Emp_no Salary');
+	for i in 1..5 loop
+		exit when c%notfound;
+		fetch c into e_no,sal;
+		dbms_output.put_line(e_no||' '||sal);
+	end loop;
+	close c;
+	close c1;
+end;
+
+First Highest paid employee
+Emp_no Salary
+10006 43213
+10001 24335
+10004 12313
+10002 4211
+10008 2213
+First Lowest paid employee
+Emp_no Salary
+10007 230
+10003 1234
+10005 1331
+10008 2213
+10002 4211
+
+PL/SQL procedure successfully completed.
+
+10)
+
+
 
