@@ -452,5 +452,11 @@ PL/SQL procedure successfully completed.
 
 10)
 
+11)
+
+SQL> create table stud(id number(3),dept varchar(5));
+
+Table created.
+
 
 
