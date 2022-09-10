@@ -481,6 +481,29 @@ SQL> select * from bank_trans;
       1004 W 02-09-2002      10000 N
 
 
+SQL> @C:\Users\kallu\Desktop\dbms_lab\trans.sql;
+ 35  /
+Transaction do not takes place for account number = 1004
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from bank_main;
+
+    ACC_NO NAME                 ADDRESS              A CURR_BALANCE
+---------- -------------------- -------------------- - ------------
+      1001 Ramu                 Guntur               S        20000
+      1002 Bindu                Vizag                S        10000
+      1003 Abilash              Hyderabad            C        10000
+      1004 Babu                 Vijayawada           C         9000
+
+SQL> select * from bank_trans;
+
+    ACC_NO T TR_DATE        TR_AMT U
+---------- - ---------- ---------- -
+      1001 D 02-09-2022       5000 Y
+      1002 W 02-09-2022       2000 Y
+      1003 D 02-09-2022       4000 Y
+      1004 W 02-09-2022      10000 Y
 
 
 11)
