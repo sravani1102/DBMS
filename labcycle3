@@ -458,5 +458,61 @@ SQL> create table stud(id number(3),dept varchar(5));
 
 Table created.
 
+SQL> select * from stud;
+
+ID       DEPT
+-------- -----
+Y20CS009 CSE
+Y20EC019 ECE
+Y20CS074 CSE
+Y20CS134 CSE
+Y20EC193 ECE
+
+declare 
+	a number:=&number1;
+	b number:=&number2;
+	c number;
+	stu_id stud.id%type;
+begin
+	select id into stu_id from stud where dept='EEE';
+	select id into stu_id from stud where dept='CSE';
+	c:=a/b;
+exception
+	when no_data_found then
+		dbms_output.put_line('No rows selected');
+	when too_many_rows then
+		dbms_output.put_line('More than one row is selected');
+	when zero_divide then
+		dbms_output.put_line('A number can not divide by zero');
+end;
+
+Enter value for number1: 12
+old   2:        a number:=&number1;
+new   2:        a number:=12;
+Enter value for number2: 0
+old   3:        b number:=&number2;
+new   3:        b number:=0;
+No rows selected
+
+PL/SQL procedure successfully completed.
+
+12)
+
+SQL> create table inventory(product_id number(5),product_name varchar(20),quantity number(3));
+
+Table created.
+
+SQL> select * from inventory;
+
+PRODUCT_ID PRODUCT_NAME           QUANTITY
+---------- -------------------- ----------
+     12312 Add wash                     10
+     12313 Gril                          0
+     12314 Power Bot                     3
+     12315 Galaxy s7                     0
+     12316 Notebook 9                   17
+     12317 4 Door Flex                   0
+
+6 rows selected.
 
 
