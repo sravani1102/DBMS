@@ -504,15 +504,53 @@ Table created.
 
 SQL> select * from inventory;
 
+SQL> select * from inventory;
+
+PRODUCT_ID PRODUCT_NAME           QUANTITY
+---------- -------------------- ----------
+     12312 Add wash                     10
+     12313 Gril                         -1
+     12314 Power Bot                     3
+     12315 Galaxy s7                     5
+     12316 Notebook 9                   17
+     12317 4 Door Flex                  3
+
+6 rows selected.
+
+declare
+	cursor c is select quantity from inventory;
+	neagtive_quantity EXCEPTION;
+	q inventory.quantity%type;
+begin
+	open c;
+	loop
+		exit when c%notfound;
+		fetch c into q;
+		if q<0 then
+			raise neagtive_quantity;
+		end if;
+	end loop;
+exception
+	when neagtive_quantity then
+		dbms_output.put_line('The quantity of the product is less than zero');
+		update inventory set quantity=0 where quantity=q;
+end;
+	
+SQL> @C:\Users\kallu\Desktop\dbms_lab\plsql12.sql;
+ 21  /
+The quantity of the product is less than zero
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from inventory;
+
 PRODUCT_ID PRODUCT_NAME           QUANTITY
 ---------- -------------------- ----------
      12312 Add wash                     10
      12313 Gril                          0
      12314 Power Bot                     3
-     12315 Galaxy s7                     0
+     12315 Galaxy s7                     5
      12316 Notebook 9                   17
-     12317 4 Door Flex                   0
+     12317 4 Door Flex                   3
 
 6 rows selected.
-
-
