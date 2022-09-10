@@ -452,6 +452,37 @@ PL/SQL procedure successfully completed.
 
 10)
 
+
+SQL> create table bank_main(acc_no number(4),name varchar(20),address varchar(20),acc_type varchar(1),curr_balance number(10));
+
+Table created.
+
+SQL> select * from bank_main;
+
+    ACC_NO NAME                 ADDRESS              A CURR_BALANCE
+---------- -------------------- -------------------- - ------------
+      1001 Ramu                 Guntur               S        15000
+      1002 Bindu                Vizag                S        10000
+      1003 Abilash              Hyderabad            C        10000
+      1004 Babu                 Vijayawada           C         9000
+
+
+SQL> create table bank_trans(acc_no number(4),tr_type varchar(1),tr_date varchar(10),tr_amt number(10),upd_flag varchar(1));
+
+Table created.
+
+SQL> select * from bank_trans;
+
+    ACC_NO T TR_DATE        TR_AMT U
+---------- - ---------- ---------- -
+      1001 D 02-09-2002       5000 N
+      1002 W 02-09-2002       2000 Y
+      1003 D 02-09-2002       4000 Y
+      1004 W 02-09-2002      10000 N
+
+
+
+
 11)
 
 SQL> create table stud(id number(3),dept varchar(5));
