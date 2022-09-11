@@ -480,6 +480,40 @@ SQL> select * from bank_trans;
       1003 D 02-09-2002       4000 Y
       1004 W 02-09-2002      10000 N
 
+declare 
+	negative_amt exception;
+	cursor c is select acc_no,tr_type,tr_amt,upd_flag from bank_trans;
+	acc_number bank_trans.acc_no%type;
+	c_balance bank_main.curr_balance%type;
+	trans_type bank_trans.tr_type%type;
+	tr_amount bank_trans.tr_amt%type;
+	flag bank_trans.upd_flag%type;
+begin
+	open c;
+	loop
+		exit when c%notfound;
+		fetch c into acc_number,trans_type,tr_amount,flag;
+		select curr_balance into c_balance from bank_main where acc_no=acc_number;
+		if c_balance-tr_amount<0 then
+			raise negative_amt;
+		else
+			if flag='N' then
+				if trans_type='D' then
+					update bank_main set curr_balance=c_balance+tr_amount where acc_no=acc_number;
+				elsif trans_type='W' then
+					update bank_main set curr_balance=c_balance-tr_amount where acc_no=acc_number;
+				end if;
+				update bank_trans set upd_flag='Y' where acc_no=acc_number;
+			end if;
+		end if;
+	end loop;
+	close c;
+exception
+	when negative_amt then
+		dbms_output.put_line('Transaction do not takes place for account number = '||acc_number);
+		update bank_trans set upd_flag='Y' where acc_no=acc_number;
+end;
+			
 
 SQL> @C:\Users\kallu\Desktop\dbms_lab\trans.sql;
  35  /
