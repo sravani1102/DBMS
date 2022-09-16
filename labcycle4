@@ -9,15 +9,22 @@ SQL> select * from employee;
       1003       8572
       1004      12046
       1005      54321
+      1006
       
 create or replace procedure raise_salary(eno in number,inc_sal in number) as
+	salary_null exception;
 	sal employee.salary%type;
 	begin
 		select salary into sal from employee where empno=eno;
+		if sal is null then 
+			raise salary_null;
+		end if;
 		update employee set salary=sal+inc_sal where empno=eno;
 	exception 
 		when no_data_found then
 			dbms_output.put_line('The Employee is not found');
+		when salary_null then
+			dbms_output.put_line('The Salary is null');
 end;
 
 declare
@@ -61,34 +68,135 @@ SQL> select * from employee;
       1004      12046
       1005      54321
 
+SQL> @Z:\plsql\proc_call.sql;
+  7  /
+Enter value for employee_number: 1006
+old   2:        eno employee.empno%type:=&Employee_Number;
+new   2:        eno employee.empno%type:=1006;
+Enter value for modified_salary: 123
+old   3:        inc_sal employee.salary%type:=&Modified_Salary;
+new   3:        inc_sal employee.salary%type:=123;
+The Salary is null
+
+PL/SQL procedure successfully completed.
+
 2)
-create table dept1(deptno number(2),salary number(10));
+create table dept(deptno number(2),salary number(10));
 
-SQL> select * from dept1;
+Table created.
 
-    DEPTNO     SALARY
+SQL> select * from dept;
+
+       DNO     SALARY
 ---------- ----------
-        10      12943
-        20      56742
-        30      76642
-        20       4634
-        40       8734
-        20      87234
+        10      23451
+        30      12345
+        20       1344
+        20      23562
+        20      45253
+        10       1244
 
 6 rows selected.
 
-create or replace 
-function dept_sal(dept_no in number) return as
-	sal dept1.salary%type;
+create or replace function dept_sal(dept_no number) return number as
+	sal dept.salary%type;
 begin
-	select tot_sal into sal from dept1 where deptno=dept_no group by deptno;
+	select sum(salary) into sal from dept where dno=dept_no group by dno;
 	return sal;
 end;
 
 declare 
-	dept_no dept1.deptno%type:=&Dept_no;
-	tot_sal dept1.salary%type;
+	dept_no dept.dno%type:=&Dept_no;
+	tot_sal dept.salary%type;
 begin
-	tot_sal=dept_sal(dept_no);
+	tot_sal:=dept_sal(dept_no);
 	dbms_output.put_line('The total salary for department number '||dept_no||' = '||tot_sal);
 end;
+
+
+SQL> @Z:\plsql\fun.sql;
+  7  /
+
+Function created.
+
+SQL> @Z:\plsql\fun_call.sql;
+  8  /
+Enter value for dept_no: 20
+old   2:        dept_no dept.dno%type:=&Dept_no;
+new   2:        dept_no dept.dno%type:=20;
+The total salary for department number 20 = 70159
+
+PL/SQL procedure successfully completed.
+
+3)
+
+SQL> create table employee(eno number(5),salary number(5));
+
+Table created.
+
+SQL> select * from employee;
+
+       ENO     SALARY
+---------- ----------
+     10001      12000
+     10002       3000
+     10003       4000
+    
+    
+create or replace function incr(e_no number) return number as
+	sal employee.salary%type;
+	increment number;
+	begin
+		select salary into sal from employee where eno=e_no;
+		if sal<=3000 then
+			increment:=0.3*sal;
+		elsif sal<=6000 then
+		increment:=0.2*sal;
+		else
+			increment:=0.1*sal;
+		end if;
+		return increment;
+	end;
+
+declare
+	e_no employee.eno%type:=&employee_number;
+	sal employee.salary%type;
+	increment number;
+begin
+	select salary into sal from employee where eno=e_no;
+	increment:=incr(e_no);
+	dbms_output.put_line('The increment salary of salary='||sal||' is '||increment);
+end;
+
+SQL> @Z:\plsql\fun_emp.sql;
+ 15  /
+
+Function created.
+
+SQL> @Z:\plsql\fun_emp_call.sql;
+ 10  /
+Enter value for employee_number: 10001
+old   2:        e_no employee.eno%type:=&employee_number;
+new   2:        e_no employee.eno%type:=10001;
+The increment salary of salary=12000 is 1200
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for employee_number: 10002
+old   2:        e_no employee.eno%type:=&employee_number;
+new   2:        e_no employee.eno%type:=10002;
+The increment salary of salary=3000 is 900
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for employee_number: 10003
+old   2:        e_no employee.eno%type:=&employee_number;
+new   2:        e_no employee.eno%type:=10003;
+The increment salary of salary=4000 is 800
+
+PL/SQL procedure successfully completed.
+
+4)
+
