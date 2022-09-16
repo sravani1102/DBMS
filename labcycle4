@@ -1,0 +1,94 @@
+1)
+
+SQL> select * from employee;
+
+     EMPNO     SALARY
+---------- ----------
+      1001      74863
+      1002       4572
+      1003       8572
+      1004      12046
+      1005      54321
+      
+create or replace procedure raise_salary(eno in number,inc_sal in number) as
+	sal employee.salary%type;
+	begin
+		select salary into sal from employee where empno=eno;
+		update employee set salary=sal+inc_sal where empno=eno;
+	exception 
+		when no_data_found then
+			dbms_output.put_line('The Employee is not found');
+end;
+
+declare
+	eno employee.empno%type:=&Employee_Number;
+	inc_sal employee.salary%type:=&Modified_Salary;
+begin
+	raise_salary(eno,inc_sal);
+end;
+
+SQL> @C:\Users\kallu\Desktop\dbms_lab\proc_main.sql;
+  8  /
+Enter value for employee_number: 1001
+old   2:        eno employee.empno%type:=&Employee_Number;
+new   2:        eno employee.empno%type:=1001;
+Enter value for modified_salary: 212
+old   3:        inc_sal employee.salary%type:=&Modified_Salary;
+new   3:        inc_sal employee.salary%type:=212;
+
+PL/SQL procedure successfully completed.
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for employee_number: 1009
+old   2:        eno employee.empno%type:=&Employee_Number;
+new   2:        eno employee.empno%type:=1009;
+Enter value for modified_salary: 312
+old   3:        inc_sal employee.salary%type:=&Modified_Salary;
+new   3:        inc_sal employee.salary%type:=312;
+The Employee is not found
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from employee;
+
+     EMPNO     SALARY
+---------- ----------
+      1001      75075
+      1002       4572
+      1003       8572
+      1004      12046
+      1005      54321
+
+2)
+create table dept1(deptno number(2),salary number(10));
+
+SQL> select * from dept1;
+
+    DEPTNO     SALARY
+---------- ----------
+        10      12943
+        20      56742
+        30      76642
+        20       4634
+        40       8734
+        20      87234
+
+6 rows selected.
+
+create or replace 
+function dept_sal(dept_no in number) return as
+	sal dept1.salary%type;
+begin
+	select tot_sal into sal from dept1 where deptno=dept_no group by deptno;
+	return sal;
+end;
+
+declare 
+	dept_no dept1.deptno%type:=&Dept_no;
+	tot_sal dept1.salary%type;
+begin
+	tot_sal=dept_sal(dept_no);
+	dbms_output.put_line('The total salary for department number '||dept_no||' = '||tot_sal);
+end;
