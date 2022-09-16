@@ -200,3 +200,53 @@ PL/SQL procedure successfully completed.
 
 4)
 
+SQL> create table emp(ename varchar(20),gross_sal number(5),commission number(5));
+
+Table created.
+
+SQL> select * from emp;
+
+ENAME                 GROSS_SAL COMMISSION
+-------------------- ---------- ----------
+Sravani                    2000       1000
+Pragathi                   2500       5000
+Vijaya                     1200        500
+Praveena                   3000       1000
+
+create or replace procedure tot_earning as
+cursor c is select * from emp;
+emp_name emp.ename%type;
+e_gsal emp.gross_sal%type;
+e_com emp.commission%type;
+tot_earn number;
+begin
+	open c;
+	dbms_output.put_line('Emp Name Total Earning');
+	loop
+		exit when c%notfound;
+		fetch c into emp_name,e_gsal,e_com;
+		tot_earn:=12*(e_gsal+e_com);
+		dbms_output.put_line(emp_name||'    '||tot_earn);
+	end loop;
+	close c;
+end;
+
+begin
+tot_earning;
+end;
+
+SQL> @Z:\plsql\pro_emp.sql;
+ 18  /
+
+Procedure created.
+
+SQL> @Z:\plsql\pro_emp_call.sql;
+  4  /
+Emp Name Total Earning
+Sravani    36000
+Pragathi    90000
+Vijaya    20400
+Praveena    48000
+Praveena    48000
+
+PL/SQL procedure successfully completed.
