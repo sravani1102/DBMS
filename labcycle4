@@ -250,3 +250,99 @@ Praveena    48000
 Praveena    48000
 
 PL/SQL procedure successfully completed.
+
+5)
+
+SQL> select empno,sal from emp;
+
+     EMPNO        SAL
+---------- ----------
+      7369        800
+      7499       1600
+      7521       1250
+      7566       2975
+      7654       1250
+
+create or replace trigger emp_newsal before insert or update on emp
+for each row
+begin
+	if (:new.sal<:old.sal) then
+		raise_application_error(-20000,'You cannot update salary');
+	end if;
+end;
+
+SQL> @C:\Users\kallu\Desktop\dbms_lab\tigger.sql;
+  8  /
+
+Trigger created.
+
+SQL> update emp set sal=1000 where empno=7369;
+
+1 row updated.
+
+SQL> update emp set sal=500 where empno=7499;
+update emp set sal=500 where empno=7499
+       *
+ERROR at line 1:
+ORA-20000: You cannot update salary
+ORA-06512: at "SCOTT.EMP_NEWSAL", line 3
+ORA-04088: error during execution of trigger 'SCOTT.EMP_NEWSAL'
+
+
+6)
+
+SQL> create table persinfo(empno number(5),name varchar(20),age number(2));
+
+Table created.
+
+SQL> create table auditpersinfo(empno number(5),name varchar(20),age number(2),operation varchar(10),odate date);
+
+Table created.
+
+SQL> select * from persinfo;
+
+     EMPNO NAME                        AGE
+---------- -------------------- ----------
+      1001 Sravani                      25
+      1002 Vindhya                      30
+      1003 Pragathi                     24
+      1004 Vijaya                       31
+      1005 Praveena                     27
+create or replace trigger audit_trial after update or delete on persinfo
+for each row
+declare
+	op auditpersinfo.operation%type;
+begin
+	if updating then 
+		op:='UPDATE';
+	end if;
+	if deleting then
+		op:='DELETE';
+	end if;
+	insert into auditpersinfo values(:old.empno,:old.name,:old.age,op,sysdate);
+end;
+
+SQL> update persinfo set age=40 where empno=1003;
+
+1 row updated.
+
+SQL> delete from persinfo where empno=1004;
+
+1 row deleted.
+
+SQL> select * from persinfo;
+
+     EMPNO NAME                        AGE
+---------- -------------------- ----------
+      1001 Sravani                      25
+      1002 Vindhya                      30
+      1003 Pragathi                     40
+      1005 Praveena                     27
+      
+  SQL> select * from auditpersinfo;
+
+     EMPNO NAME                        AGE OPERATION  ODATE
+---------- -------------------- ---------- ---------- ---------
+      1003 Pragathi                     24 UPDATE     16-SEP-22
+      1004 Vijaya                       31 DELETE     16-SEP-22
+
