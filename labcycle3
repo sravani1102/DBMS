@@ -514,6 +514,39 @@ exception
 		update bank_trans set upd_flag='Y' where acc_no=acc_number;
 end;
 			
+declare
+cursor c is select acc_no,tr_type,tr_amt,upd_flag from bank_trans;
+n_bal exception;
+ano bank_trans.acc_no%type;
+trt bank_trans.tr_type%type;
+tra bank_trans.tr_amt%type;
+uflag bank_trans.upd_flag%type;
+cb bank_main.curr_balance%type;
+begin
+open c;
+loop
+fetch c into ano,trt,tra,uflag;
+exit when c%notfound;
+select curr_balance into cb from bank_main where acc_no=ano;
+if uflag='n' then
+update bank_trans set upd_flag='y' where acc_no=ano;
+if trt='d' then
+update bank_main set curr_balance=cb+tra where acc_no=ano;
+else
+if cb-tra<0 then
+raise n_bal;
+else
+update bank_main set curr_balance=cb-tra where acc_no=ano;
+end if;
+end if;
+end if;
+end loop;
+close c;
+exception
+when n_bal then
+dbms_output.put_line('cannot withdraw');
+end;
+
 
 SQL> @C:\Users\kallu\Desktop\dbms_lab\trans.sql;
  35  /
